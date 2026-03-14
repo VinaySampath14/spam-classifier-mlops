@@ -14,7 +14,7 @@ feature_engineering:
   y_train_path: "data/features/y_train.csv"
   y_test_path: "data/features/y_test.csv"
   vectorizer_path: "models/tfidf_vectorizer.pkl"
-  max_features: 5000
+  max_features: 3000
   ngram_range: [1, 2]
 
 model_building:
