@@ -7,3 +7,17 @@ data_preprocessing:
   test_path: "data/processed/test.csv"
   test_size: 0.2
   random_state: 42
+
+feature_engineering:
+  x_train_path: "data/features/X_train.pkl"
+  x_test_path: "data/features/X_test.pkl"
+  y_train_path: "data/features/y_train.csv"
+  y_test_path: "data/features/y_test.csv"
+  vectorizer_path: "models/tfidf_vectorizer.pkl"
+  max_features: 5000
+  ngram_range: [1, 2]
+
+model_building:
+  model_path: "models/logistic_regression_model.pkl"
+  max_iter: 1000
+  random_state: 42
