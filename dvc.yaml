@@ -1,0 +1,63 @@
+stages:
+  ingest:
+    cmd: python -m src.data_ingestion
+    deps:
+      - src/data_ingestion.py
+      - src/logger.py
+      - src/utils.py
+      - params.yaml
+    outs:
+      - data/raw/spam.csv
+
+  preprocess:
+    cmd: python -m src.data_preprocessing
+    deps:
+      - src/data_preprocessing.py
+      - src/logger.py
+      - src/utils.py
+      - data/raw/spam.csv
+      - params.yaml
+    outs:
+      - data/processed/train.csv
+      - data/processed/test.csv
+
+  feature_engineering:
+    cmd: python -m src.feature_engineering
+    deps:
+      - src/feature_engineering.py
+      - src/logger.py
+      - src/utils.py
+      - data/processed/train.csv
+      - data/processed/test.csv
+      - params.yaml
+    outs:
+      - data/features/X_train.pkl
+      - data/features/X_test.pkl
+      - data/features/y_train.csv
+      - data/features/y_test.csv
+      - models/tfidf_vectorizer.pkl
+
+  train:
+    cmd: python -m src.model_building
+    deps:
+      - src/model_building.py
+      - src/logger.py
+      - src/utils.py
+      - data/features/X_train.pkl
+      - data/features/y_train.csv
+      - params.yaml
+    outs:
+      - models/logistic_regression_model.pkl
+
+  evaluate:
+    cmd: python -m src.model_evaluation
+    deps:
+      - src/model_evaluation.py
+      - src/logger.py
+      - src/utils.py
+      - data/features/X_test.pkl
+      - data/features/y_test.csv
+      - models/logistic_regression_model.pkl
+      - params.yaml
+    metrics:
+      - reports/metrics.json

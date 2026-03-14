@@ -1,0 +1,174 @@
+schema: '2.0'
+stages:
+  ingest:
+    cmd: python -m src.data_ingestion
+    deps:
+    - path: params.yaml
+      hash: md5
+      md5: 37698dc9fe9fa810d1de504e05dcdd6b
+      size: 740
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: 71f05ed558fb471a4350358211662264
+      size: 2004
+    - path: src/logger.py
+      hash: md5
+      md5: 91379452e45a5101a48880fe920657fe
+      size: 747
+    - path: src/utils.py
+      hash: md5
+      md5: 34ed53ffd767b40f8c8786727ac20bea
+      size: 650
+    outs:
+    - path: data/raw/spam.csv
+      hash: md5
+      md5: cfbb4abb86c2302a4c13666ff8f83b31
+      size: 507295
+  preprocess:
+    cmd: python -m src.data_preprocessing
+    deps:
+    - path: data/raw/spam.csv
+      hash: md5
+      md5: cfbb4abb86c2302a4c13666ff8f83b31
+      size: 507295
+    - path: params.yaml
+      hash: md5
+      md5: 37698dc9fe9fa810d1de504e05dcdd6b
+      size: 740
+    - path: src/data_preprocessing.py
+      hash: md5
+      md5: f7bbbbef680d01389d091dbb9afe58c9
+      size: 4204
+    - path: src/logger.py
+      hash: md5
+      md5: 91379452e45a5101a48880fe920657fe
+      size: 747
+    - path: src/utils.py
+      hash: md5
+      md5: 34ed53ffd767b40f8c8786727ac20bea
+      size: 650
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: de4ea6ef5a79a896b90dafdfc2d59664
+      size: 98017
+    - path: data/processed/train.csv
+      hash: md5
+      md5: c075a5cb9e3291d085e7d35e23917bf5
+      size: 389217
+  feature_engineering:
+    cmd: python -m src.feature_engineering
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: de4ea6ef5a79a896b90dafdfc2d59664
+      size: 98017
+    - path: data/processed/train.csv
+      hash: md5
+      md5: c075a5cb9e3291d085e7d35e23917bf5
+      size: 389217
+    - path: params.yaml
+      hash: md5
+      md5: 37698dc9fe9fa810d1de504e05dcdd6b
+      size: 740
+    - path: src/feature_engineering.py
+      hash: md5
+      md5: 5015b52d8296f0c6cf332ac383dec1a3
+      size: 5244
+    - path: src/logger.py
+      hash: md5
+      md5: 91379452e45a5101a48880fe920657fe
+      size: 747
+    - path: src/utils.py
+      hash: md5
+      md5: 34ed53ffd767b40f8c8786727ac20bea
+      size: 650
+    outs:
+    - path: data/features/X_test.pkl
+      hash: md5
+      md5: 544ef1606ac421a7e9c9e569cefca19d
+      size: 206219
+    - path: data/features/X_train.pkl
+      hash: md5
+      md5: d1ec03a0e5e128c916e285e247c74174
+      size: 875955
+    - path: data/features/y_test.csv
+      hash: md5
+      md5: 6a37a9366da3ff0e8f9d24d48927d289
+      size: 5732
+    - path: data/features/y_train.csv
+      hash: md5
+      md5: 55de5fa83c77470dc372a93753f8b6b9
+      size: 22891
+    - path: models/tfidf_vectorizer.pkl
+      hash: md5
+      md5: 30044b0f92a75fffcf2b5bc3db92479b
+      size: 186523
+  train:
+    cmd: python -m src.model_building
+    deps:
+    - path: data/features/X_train.pkl
+      hash: md5
+      md5: d1ec03a0e5e128c916e285e247c74174
+      size: 875955
+    - path: data/features/y_train.csv
+      hash: md5
+      md5: 55de5fa83c77470dc372a93753f8b6b9
+      size: 22891
+    - path: params.yaml
+      hash: md5
+      md5: 37698dc9fe9fa810d1de504e05dcdd6b
+      size: 740
+    - path: src/logger.py
+      hash: md5
+      md5: 91379452e45a5101a48880fe920657fe
+      size: 747
+    - path: src/model_building.py
+      hash: md5
+      md5: 8e2dbc3d86a9a69d2441f600995bf8c9
+      size: 3060
+    - path: src/utils.py
+      hash: md5
+      md5: 34ed53ffd767b40f8c8786727ac20bea
+      size: 650
+    outs:
+    - path: models/logistic_regression_model.pkl
+      hash: md5
+      md5: b279e64f08dd3c8743fa707dced2bb2c
+      size: 40991
+  evaluate:
+    cmd: python -m src.model_evaluation
+    deps:
+    - path: data/features/X_test.pkl
+      hash: md5
+      md5: 544ef1606ac421a7e9c9e569cefca19d
+      size: 206219
+    - path: data/features/y_test.csv
+      hash: md5
+      md5: 6a37a9366da3ff0e8f9d24d48927d289
+      size: 5732
+    - path: models/logistic_regression_model.pkl
+      hash: md5
+      md5: b279e64f08dd3c8743fa707dced2bb2c
+      size: 40991
+    - path: params.yaml
+      hash: md5
+      md5: 37698dc9fe9fa810d1de504e05dcdd6b
+      size: 740
+    - path: src/logger.py
+      hash: md5
+      md5: 91379452e45a5101a48880fe920657fe
+      size: 747
+    - path: src/model_evaluation.py
+      hash: md5
+      md5: 7790eadaa3177f036b13b8ee5977ee68
+      size: 3582
+    - path: src/utils.py
+      hash: md5
+      md5: 34ed53ffd767b40f8c8786727ac20bea
+      size: 650
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: 8b03fadbfeb734af7ce715bc77c67a76
+      size: 150
