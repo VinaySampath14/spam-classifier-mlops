@@ -2,6 +2,7 @@ import json
 import os
 import joblib
 import pandas as pd
+from dvclive import Live
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 from src.logger import logger
@@ -41,7 +42,7 @@ def load_evaluation_artifacts(x_test_path: str, y_test_path: str, model_path: st
         raise
 
 
-def evaluate_model(X_test, y_test, model) -> dict:
+def evaluate_model(X_test, y_test, model) -> tuple[dict, pd.Series]:
     """Generate predictions and compute evaluation metrics."""
     try:
         y_pred = model.predict(X_test)
@@ -56,7 +57,7 @@ def evaluate_model(X_test, y_test, model) -> dict:
         logger.info("Model evaluation completed successfully")
         logger.debug("Evaluation metrics: %s", metrics)
 
-        return metrics
+        return metrics, y_pred
 
     except Exception as e:
         logger.error("Failed during model evaluation: %s", e)
@@ -78,6 +79,23 @@ def save_metrics(metrics: dict, metrics_path: str) -> None:
         raise
 
 
+def log_experiment(metrics: dict, params: dict) -> None:
+    """Log metrics and parameters with DVCLive."""
+    try:
+        with Live(save_dvc_exp=True) as live:
+            live.log_metric("accuracy", metrics["accuracy"])
+            live.log_metric("precision", metrics["precision"])
+            live.log_metric("recall", metrics["recall"])
+            live.log_metric("f1_score", metrics["f1_score"])
+            live.log_params(params)
+
+        logger.info("DVCLive experiment logging completed successfully")
+
+    except Exception as e:
+        logger.error("Failed to log experiment with DVCLive: %s", e)
+        raise
+
+
 def main() -> None:
     """Main model evaluation pipeline."""
     try:
@@ -96,8 +114,9 @@ def main() -> None:
             model_path=model_path
         )
 
-        metrics = evaluate_model(X_test, y_test, model)
+        metrics, _ = evaluate_model(X_test, y_test, model)
         save_metrics(metrics, metrics_path)
+        log_experiment(metrics, params)
 
         logger.info("Model evaluation completed successfully")
 
