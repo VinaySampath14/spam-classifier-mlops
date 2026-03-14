@@ -1,0 +1,9 @@
+data_source:
+  url: "https://raw.githubusercontent.com/vikashishere/Datasets/main/spam.csv"
+  raw_data_path: "data/raw/spam.csv"
+
+data_preprocessing:
+  train_path: "data/processed/train.csv"
+  test_path: "data/processed/test.csv"
+  test_size: 0.2
+  random_state: 42
